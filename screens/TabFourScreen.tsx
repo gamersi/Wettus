@@ -2,8 +2,9 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import { RootTabScreenProps } from '../types';
 
-export default function TabTwoScreen() {
+export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabFour'>) {
   return (
     <View style={styles.container}>
       

@@ -29,6 +29,14 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Diese App benötigt Zugriff auf Ihren Standort um das Wetter anzuzeigen."
+        }
+      ]
+    ]
   }
 }
