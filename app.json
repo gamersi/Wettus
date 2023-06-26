@@ -43,6 +43,12 @@
           "locationAlwaysAndWhenInUsePermission": "Diese App benötigt Zugriff auf Ihren Standort um das Wetter anzuzeigen."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b93991c9-ab90-4cb8-ab88-ff5b5c81fe40"
+      }
+    },
+    "owner": "gamersi"
   }
 }

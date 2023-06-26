@@ -1,18 +1,31 @@
-import { StyleSheet, Image } from 'react-native';
-import { useState } from 'react';
-import { Text, View } from '../components/Themed';
+import { StyleSheet, Image, RefreshControl, ActivityIndicator } from 'react-native';
+import { useState, useCallback } from 'react';
+import { Text, View, ScrollView } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import { getCurrentWeather, CurrentWeather, jsonData, dataLoaded } from '../weatherapi/weatherUtils';
+import { getCurrentWeather, CurrentWeather, jsonData, dataLoaded, loadWeatherForecast } from '../weatherapi/weatherUtils';
+import Card from '../components/Card';
+
 let currentWeather: CurrentWeather | null = null;
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  let [city, setCity] = useState("n/a");
-  let [date, setDate] = useState("n/a");
-  let [imageuri, setImageuri] = useState("https://openweathermap.org/img/wn/01d.png");
-  let [temp, setTemp] = useState("n/a");
-  let [pressure, setPressure] = useState("n/a");
-  let [humidity, setHumidity] = useState("n/a");
-  let [wind, setWind] = useState("n/a");
+  let [city, setCity] = useState("City");
+  let [date, setDate] = useState(new Date().toLocaleString());
+  let [imageuri, setImageuri] = useState("https://openweathermap.org/img/wn/01d@4x.png");
+  let [temp, setTemp] = useState("0 °C");
+  let [pressure, setPressure] = useState("0hPa");
+  let [humidity, setHumidity] = useState("0%");
+  let [wind, setWind] = useState("0m/s");
+  let [refreshing, setRefreshing] = useState(false);
+  // forecast
+  let [forecast, setForecast]: [any, any] = useState([]);
+
+
+  async function onRefresh() {
+    setRefreshing(true);
+    setDate(new Date().toLocaleString());
+    await loadWeather();
+    setRefreshing(false);
+  }0
 
   async function loadWeather() {
     getCurrentWeather().then((data) => {
@@ -31,11 +44,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     }).catch((error) => {
       console.log("Error loading weather:", error);
     });
+
+    loadWeatherForecast().then((data) => {
+      setForecast(data);
+    }).catch((error) => {
+      console.log("Error loading weather forecast:", error);
+    });
   }
-  if (currentWeather === null) loadWeather();
+  if (currentWeather === null) {
+    loadWeather();
+  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      {refreshing ? <ActivityIndicator /> : null}
       <Text style={styles.title}>{city}</Text>
       <Text style={styles.date}>{date}</Text>
       <Image style={styles.image} source={{ uri: imageuri }} />
@@ -58,7 +80,24 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         <Text style={styles.todaytext}>Heute</Text>
         <Text style={styles.showtoday}>Bericht anzeigen</Text>
       </View>
-    </View>
+      <View style={styles.cardcontainer}>
+        {currentWeather === null ? (
+          <Card bgcolor="#A7B4E0" fgcolor="#000" disabled={true}>
+            <Text style={{color: "#000"}}>Loading...</Text>
+          </Card>
+        ) : (
+          forecast.list.map((item: any, index: number) => {
+            return (
+              // #A7B4E0 for the first card and #272F3A from the second card onwards
+              <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor="#000" key={index}>
+                <Text style={{color: "#000"}}>{item.dt_txt}</Text>
+                <Text style={{color: "#000"}}>{item.main.temp}</Text>
+              </Card>
+            );
+          })
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -137,7 +176,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  //todaytext completely left and showtoday completely right
   today: {
     width: '100%',
     flex: 0.2,
@@ -154,5 +192,5 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     marginLeft: 100,
     color: '#0066ff',
-  },
+  }
 });

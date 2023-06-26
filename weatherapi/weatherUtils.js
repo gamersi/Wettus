@@ -1,26 +1,49 @@
 import getCurrentLocation from "./getCurrentLocation";
+import { storeData, getData } from "./storageUtil";
 
 let latitude = 0,
     longitude = 0,
-    error = null;
-async function loadWeather() {
+    error = null,
+    forecastData = null;
+
+async function loadLocation() {
+    let start = new Date().getTime();
     let location = await getCurrentLocation();
     latitude = location.latitude;
     longitude = location.longitude;
     error = location.error;
-    getCurrentWeather();
+    console.log("Location load took",  (new Date().getTime() - start)/1000 + "s");
 }
 
-let weatherAPIKey = "740c9668aca4207867df2b5fba35b8eb";
+export let weatherAPIKey = "n/a"
 let currentWeatherURL = null;
 
+export function getWeatherAPIKey() {
+    return weatherAPIKey;
+}
 
-let jsonData = "yay";
+async function loadWeatherAPIKey() {
+    let key = await getData("weatherAPIKey");
+    if(key != null) {
+        weatherAPIKey = key;
+        console.log("weatherAPIKey loaded from storage -", weatherAPIKey);
+    }
+}
+loadWeatherAPIKey();
+
+export function setWeatherAPIKey(key) {
+    weatherAPIKey = key;
+    storeData("weatherAPIKey", key);
+}
+
+
+let jsonData = "n/a";
 let dataLoaded = false;
 
 function getCurrentWeather() {
     return new Promise((resolve, reject) => {
-        loadWeather().then(() => {
+        loadLocation().then(() => {
+            console.log("API key", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if(error || latitude == null || longitude == null) {
                 latitude = 0;
@@ -46,6 +69,49 @@ function getCurrentWeather() {
     });
 }
 
+function getWeatherForecast() {
+    return new Promise((resolve, reject) => {
+        loadLocation().then(() => {
+            currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
+            if(error || latitude == null || longitude == null) {
+                latitude = 0;
+                longitude = 0;
+                position = null;
+                error = null;
+                currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=${weatherAPIKey}&units=metric&lang=de`;
+            }
+            fetch(currentWeatherURL)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (json) {
+                    jsonData = json;
+                    dataLoaded = true;
+                    resolve(jsonData);
+                })
+                .catch(function (error) {
+                    console.log("weather forecast fetch error", error);
+                    reject(error);
+                });
+            });
+    });
+}
+
+function loadWeatherForecast() {
+    // getWeatherForecast() and then stores it in a variable for later use, if it is not already loaded. returns it then
+    return new Promise((resolve, reject) => {
+        if(forecastData == null) {
+            getWeatherForecast().then((data) => {
+                forecastData = data;
+                resolve(forecastData);
+            }).catch((error) => {
+                reject(error);
+            });
+        } else {
+            resolve(forecastData);
+        }
+    });
+}
 class CurrentWeather {
     constructor(data) {
         this.city = data.name;
@@ -118,7 +184,7 @@ class CurrentWeather {
     }
 
     getFormattedIcon() {
-        return `http://openweathermap.org/img/w/${this.icon}.png`;
+        return `http://openweathermap.org/img/w/${this.icon}@4x.png`;
     }
 
     getFormattedCity() {
@@ -130,5 +196,6 @@ export {
     getCurrentWeather,
     jsonData,
     dataLoaded,
-    CurrentWeather
+    CurrentWeather,
+    loadWeatherForecast
 };

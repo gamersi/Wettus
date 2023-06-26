@@ -20,7 +20,7 @@ async function getCurrentLocation() {
         }
     }
 
-    userLocation = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
+    userLocation = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Balanced, maximumAge: 10000, timeout: 10000});
     latitude = userLocation.coords.latitude;
     longitude = userLocation.coords.longitude;
     position = userLocation.coords;
