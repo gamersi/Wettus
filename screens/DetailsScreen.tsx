@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, Modal, Platform, StyleSheet } from 'react-native';
+import { Modal, StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 
-export default function DetalsScreen({ isVisible, children, onClose }: { isVisible: boolean, children: any, onClose: any }) {
+export default function DetalsScreen({ isVisible, currentWeather, onClose }: { isVisible: boolean, currentWeather: any, onClose: any }) {
     return (
         <Modal visible={isVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose} onDismiss={onClose}>
             <View style={styles.container}>

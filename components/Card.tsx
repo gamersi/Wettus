@@ -2,13 +2,12 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 type CardProps = {
-    children: React.ReactNode,
+    children?: React.ReactNode,
     bgcolor: string,
     fgcolor: string,
-    style: object | undefined,
-    onPress: () => void | undefined,
-    onLongPress: () => void | undefined,
-    disabled: boolean | undefined,
+    style?: object | undefined,
+    onPress?: () => void | undefined,
+    onLongPress?: () => void | undefined,
 };
 
 export default function Card(props: CardProps) {
@@ -23,7 +22,7 @@ export default function Card(props: CardProps) {
         },
     });
     return (
-        <View style={styles.card}>
+        <View style={styles.card} onTouchStart={props.onPress}>
             {props.children}
         </View>
     );
