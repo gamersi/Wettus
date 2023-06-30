@@ -21,6 +21,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   let [feelsLike, setFeelsLike] = useState("0 °C");
   let [refreshing, setRefreshing] = useState(false);
   let [detailsVisible, setDetailsVisible] = useState(false);
+  let [detailsData, setDetailsData]: [object, any] = useState({});
+  let [isFuture, setIsFuture] = useState(false);
   // forecast
   let [forecast, setForecast]: [any, any] = useState({});
 
@@ -35,6 +37,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     getCurrentWeather().then((data) => {
       try {
         currentWeather = new CurrentWeather(jsonData);
+        setDetailsData(currentWeather);
         setCity(currentWeather.getFormattedCity());
         setDescription(currentWeather.getFormattedDescription());
         setImageuri(currentWeather.getFormattedIcon());
@@ -69,7 +72,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 }
 
   function getTimeDiffString(date: Date) {
-    // Heute, Morgen, Übermorgen, in 4 Tagen aber exakt, dass heisst wenn es sagen wir mal grad das baseDate heute 14:00 ist, dann soll morgen schon ab 00:00  morgen stehen und nicht erst ab 14:00
     let day1 = baseDate.getDate();
     let month1 = baseDate.getMonth();
     let day2 = date.getDate();
@@ -77,15 +79,15 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     let diff = day2 - day1;
     if (month1 !== month2) {
       if (month2 - month1 === 1) {
-        if (day2 === 1 && isLastDay(date)) {
+        if (day2 === 1 && isLastDay(baseDate)) {
           return "Morgen";
         }
-        if (day2 === 2 && isLastDay(date)) {
+        if (day2 === 2 && isLastDay(baseDate)) {
           return "Übermorgen";
         }
         return "in TBD Tagen";
       }
-      return "in TBD Tagen";
+      return "in TBD Tagen2";
     }
     if (diff === 0) {
       return "Heute";
@@ -102,7 +104,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   return (
     <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {refreshing ? <ActivityIndicator /> : null}
-      <DetailsScreen isVisible={detailsVisible} currentWeather={currentWeather} onClose={() => setDetailsVisible(false)} />
+      <DetailsScreen isVisible={detailsVisible} weatherData={detailsData} isFuture={isFuture} onClose={() => setDetailsVisible(false)} />
       <Text style={styles.title}>{city}</Text>
       <Text style={styles.date}>{description}</Text>
       <Image style={styles.image} source={{ uri: imageuri }} />
@@ -127,7 +129,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       </View>
       <View style={styles.today}>
         <Text style={styles.todaytext}>Heute</Text>
-        <Button title="Details" onPress={() => setDetailsVisible(true)} />
+        <Button title="Details" onPress={() => {setDetailsVisible(true); setDetailsData(currentWeather);}} />
       </View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.cardcontainer}>
         {currentWeather === null ? (
@@ -137,7 +139,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         ) : (
           forecast.list?.slice(0, 8).map((item: any, index: number) => {
             return (
-              <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor={index === 0 ? "#000" : "#fff"} key={index}>
+              <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor={index === 0 ? "#000" : "#fff"} key={index} onPress={() => {setDetailsVisible(true); setDetailsData(item); setIsFuture(true)}}>
                 <Image style={{width: 60, height: 60}} source={{ uri: "http://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{item.weather[0].description}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{getTimeDiffString(new Date(item.dt * 1000))}</Text>

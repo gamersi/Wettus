@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 
 type CardProps = {
     children?: React.ReactNode,
@@ -22,8 +22,8 @@ export default function Card(props: CardProps) {
         },
     });
     return (
-        <View style={styles.card} onTouchStart={props.onPress}>
+        <TouchableOpacity style={styles.card} onPress={props.onPress} onLongPress={props.onLongPress}>
             {props.children}
-        </View>
+        </TouchableOpacity>
     );
 }
