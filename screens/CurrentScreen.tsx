@@ -85,6 +85,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         }
         return "in TBD Tagen";
       }
+      return "in TBD Tagen";
+    }
     if (diff === 0) {
       return "Heute";
     }
