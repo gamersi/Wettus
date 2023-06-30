@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { Text, View, TextInput } from '../components/Themed';
+import Card from '../components/Card';
+import { getWeatherAPIKey } from '../weatherapi/weatherUtils';
 
 export default function TabTwoScreen() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [result, setResult] = useState(null);
 
   function search(query: string) {
     setQuery(query);
     if (query.length > 2) {
-      fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5&accept-language=de`)
-        .then((response) => response.json())
-        .then((json) => setResults(json.filter((item: any) => item.type === 'city')))
-        .catch((error) => console.error(error))
-        .finally(() => console.log('done'));
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${getWeatherAPIKey()}&units=metric&lang=de`)
+        .then(res => res.json())
+        .then(json => {
+          setResult(json);
+        });
     }
   }
 
@@ -26,10 +28,17 @@ export default function TabTwoScreen() {
         onChangeText={text => search(text)}
         value={query} />
       <Text style={styles.title}>Suchergebnisse</Text>
-      {results.length > 0 ? (
-        results.map((item, index) => (
-          <Text key={index}>{item.display_name}</Text>
-        ))
+      {result != null ? (
+          <Card
+            bgcolor='#2C303F'
+            fgcolor='#fff'
+            style={{ width: '50%' }}
+          >
+            <Image source={{ uri: `https://openweathermap.org/img/wn/${result.weather[0].icon}@4x.png` }} />
+            <Text>{result.name}</Text>
+            <Text>{result.weather[0].description}</Text>
+            <Text>{result.main.temp} °C</Text>
+          </Card>
       ) : (
         <Text>Keine Ergebnisse</Text>
       )}

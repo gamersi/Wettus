@@ -72,6 +72,7 @@ function getCurrentWeather() {
 function getWeatherForecast() {
     return new Promise((resolve, reject) => {
         loadLocation().then(() => {
+            console.log("API keyf", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if(error || latitude == null || longitude == null) {
                 latitude = 0;
@@ -102,6 +103,7 @@ function loadWeatherForecast() {
     return new Promise((resolve, reject) => {
         if(forecastData == null) {
             getWeatherForecast().then((data) => {
+                if (data.cod != 200) reject("Error loading weather forecast");
                 forecastData = data;
                 resolve(forecastData);
             }).catch((error) => {
@@ -117,6 +119,9 @@ class CurrentWeather {
         this.city = data.name;
         this.country = data.sys.country;
         this.temperature = data.main.temp;
+        this.feelsLike = data.main.feels_like;
+        this.minTemperature = data.main.temp_min;
+        this.maxTemperature = data.main.temp_max;
         this.description = data.weather[0].description;
         this.icon = data.weather[0].icon;
         this.windSpeed = data.wind.speed;
@@ -129,7 +134,19 @@ class CurrentWeather {
     }
 
     getFormattedTemperature() {
-        return `${Math.round(this.temperature)}°C`;
+        return `${Math.round(this.temperature)} °C`;
+    }
+
+    getFormattedFeelsLike() {
+        return `${Math.round(this.feelsLike)} °C`;
+    }
+
+    getFormattedMinTemperature() {
+        return `${Math.round(this.minTemperature)} °C`;
+    }
+
+    getFormattedMaxTemperature() {
+        return `${Math.round(this.maxTemperature)} °C`;
     }
 
     getFormattedWindSpeed() {
@@ -169,14 +186,7 @@ class CurrentWeather {
     }
 
     getFormattedDate() {
-        let date = new Date();
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-        // fill in leading zeros
-        day = day < 10 ? "0" + day : day;
-        month = month < 10 ? "0" + month : month;
-        return day + '.' + month + '.' + year;
+        return new Date().toLocaleString();
     }
 
     getFormattedDescription() {
@@ -184,7 +194,7 @@ class CurrentWeather {
     }
 
     getFormattedIcon() {
-        return `http://openweathermap.org/img/w/${this.icon}@4x.png`;
+        return `http://openweathermap.org/img/wn/${this.icon}@4x.png`;
     }
 
     getFormattedCity() {
