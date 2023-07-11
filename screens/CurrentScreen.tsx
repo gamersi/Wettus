@@ -1,5 +1,5 @@
 import { StyleSheet, Image, RefreshControl, ActivityIndicator, Button } from 'react-native';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Text, View, ScrollView } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import { getCurrentWeather, CurrentWeather, jsonData, dataLoaded, loadWeatherForecast } from '../weatherapi/weatherUtils';
@@ -69,7 +69,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
   function isLastDay(date: Date) {
     return new Date(date.getTime() + 86400000).getDate() === 1; // 86400000 = 24 * 60 * 60 * 1000
-}
+  }
 
   function getTimeDiffString(date: Date) {
     let day1 = baseDate.getDate();
@@ -129,7 +129,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       </View>
       <View style={styles.today}>
         <Text style={styles.todaytext}>Heute</Text>
-        <Button title="Details" onPress={() => {setDetailsVisible(true); setDetailsData(currentWeather);}} />
+        <Button title="Details" onPress={() => { setDetailsVisible(true); setDetailsData(currentWeather); }} />
       </View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.cardcontainer}>
         {currentWeather === null ? (
@@ -139,8 +139,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         ) : (
           forecast.list?.slice(0, 8).map((item: any, index: number) => {
             return (
-              <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor={index === 0 ? "#000" : "#fff"} key={index} onPress={() => {setDetailsVisible(true); setDetailsData(item); setIsFuture(true)}}>
-                <Image style={{width: 60, height: 60}} source={{ uri: "http://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
+              <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} style={styles.forecastPeekCard} fgcolor={index === 0 ? "#000" : "#fff"} key={index} onPress={() => { setDetailsVisible(true); setDetailsData(item); setIsFuture(true) }}>
+                <Image style={{ width: 60, height: 60 }} source={{ uri: "http://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{item.weather[0].description}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{getTimeDiffString(new Date(item.dt * 1000))}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{new Date(item.dt * 1000).getHours()} Uhr</Text>
@@ -215,5 +215,8 @@ const styles = StyleSheet.create({
   cardcontainer: {
     flex: 0.5,
     flexDirection: 'row',
+  },
+  forecastPeekCard: {
+    width: 150,
   },
 });

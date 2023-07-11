@@ -2,7 +2,7 @@ import { Modal, StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 
-export default function DetalsScreen({ isVisible, weatherData, isFuture, onClose }: { isVisible: boolean, weatherData: any, isFuture: boolean, onClose: any }) {
+export default function DetailsScreen({ isVisible, weatherData, isFuture, onClose }: { isVisible: boolean, weatherData: any, isFuture: boolean, onClose: any }) {
     return (
         <Modal visible={isVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose} onDismiss={onClose}>
             <View style={styles.container}>
