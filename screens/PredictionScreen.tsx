@@ -9,7 +9,8 @@ import DetailsScreen from './DetailsScreen';
 export default function TabThreeScreen({ navigation }: RootTabScreenProps<'TabThree'>) {
   let [forecast, setForecast]: [any, any] = useState({});
   let [detailsVisible, setDetailsVisible] = useState(false);
-  let [detailsData, setDetailsData]: [object, any] = useState({});
+  let [detailsData, setDetailsData]: [any, any] = useState({});
+  let [isFuture, setIsFuture] = useState(false);
 
   const getDay = (date: Date) => {
     const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
@@ -31,13 +32,13 @@ export default function TabThreeScreen({ navigation }: RootTabScreenProps<'TabTh
 
   return (
     <View style={styles.container}>
-      <DetailsScreen isVisible={detailsVisible} weatherData={detailsData} isFuture={true} onClose={() => { setDetailsVisible(false); }} />
+      <DetailsScreen isVisible={detailsVisible} weatherData={detailsData} isFuture={isFuture} onClose={() => { setDetailsVisible(false); }} />
       <Text style={styles.title}>Wettervorhersage</Text>
       <Text style={styles.subtitle}>5 Tage / 3 Stunden - {forecast.city?.name}</Text>
       <ScrollView style={styles.forecastContainer}>
         {forecast.list?.map((item: any, index: number) => {
           return (
-            <Card key={index} bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor={index === 0 ? "#000" : "#fff"} style={styles.forecastItem} onPress={() => { setDetailsData(item); setDetailsVisible(true); }}>
+            <Card key={index} bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} fgcolor={index === 0 ? "#000" : "#fff"} style={styles.forecastItem} onPress={() => { setIsFuture(true); setDetailsVisible(true); setDetailsData(item); }}>
               <View style={{flexDirection: 'column', backgroundColor: 'transparent'}}>
                 <Text style={{fontSize: 20}}>{new Date(item.dt * 1000).getHours()} Uhr</Text>
                 <Text style={{fontSize: 15}}>{getDay(new Date(item.dt * 1000))}</Text>

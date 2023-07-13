@@ -129,7 +129,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       </View>
       <View style={styles.today}>
         <Text style={styles.todaytext}>Heute</Text>
-        <Button title="Details" onPress={() => { setDetailsVisible(true); setDetailsData(currentWeather); }} />
+        <Button title="Details" onPress={() => { setDetailsVisible(true); setDetailsData(currentWeather); setIsFuture(false); }} />
       </View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.cardcontainer}>
         {currentWeather === null ? (
