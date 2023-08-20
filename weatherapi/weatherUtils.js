@@ -1,10 +1,26 @@
 import getCurrentLocation from "./getCurrentLocation";
 import { storeData, getData } from "./storageUtil";
+import React, { createContext, useContext, useState } from 'react';
 
 let latitude = 0,
     longitude = 0,
     error = null,
     forecastData = null;
+
+const WeatherContext = createContext();
+export function WeatherProvider({ children }) {
+    const [apiKeyCorrect, setAPIKeyCorrect] = useState(false);
+
+    return (
+        <WeatherContext.Provider value={{ apiKeyCorrect, setAPIKeyCorrect }}>
+            {children}
+        </WeatherContext.Provider>
+    );
+}
+
+export function useWeatherContext() {
+    return useContext(WeatherContext);
+}
 
 async function loadLocation() {
     let start = new Date().getTime();
@@ -12,10 +28,10 @@ async function loadLocation() {
     latitude = location.latitude;
     longitude = location.longitude;
     error = location.error;
-    console.log("Location load took",  (new Date().getTime() - start)/1000 + "s");
+    console.log("Location load took", (new Date().getTime() - start) / 1000 + "s");
 }
 
-export let weatherAPIKey = "n/a"
+export let weatherAPIKey = "changeme"
 let currentWeatherURL = null;
 
 export function getWeatherAPIKey() {
@@ -24,7 +40,7 @@ export function getWeatherAPIKey() {
 
 async function loadWeatherAPIKey() {
     let key = await getData("weatherAPIKey");
-    if(key != null) {
+    if (key != null) {
         weatherAPIKey = key;
         console.log("weatherAPIKey loaded from storage -", weatherAPIKey);
     }
@@ -36,7 +52,6 @@ export function setWeatherAPIKey(key) {
     storeData("weatherAPIKey", key);
 }
 
-
 let jsonData = "n/a";
 let dataLoaded = false;
 
@@ -45,7 +60,7 @@ function getCurrentWeather() {
         loadLocation().then(() => {
             console.log("API key", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
-            if(error || latitude == null || longitude == null) {
+            if (error || latitude == null || longitude == null) {
                 latitude = 0;
                 longitude = 0;
                 position = null;
@@ -65,7 +80,7 @@ function getCurrentWeather() {
                     console.log("current weather fetch error", error);
                     reject(error);
                 });
-            });
+        });
     });
 }
 
@@ -74,7 +89,7 @@ function getWeatherForecast() {
         loadLocation().then(() => {
             console.log("API keyf", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
-            if(error || latitude == null || longitude == null) {
+            if (error || latitude == null || longitude == null) {
                 latitude = 0;
                 longitude = 0;
                 position = null;
@@ -94,14 +109,14 @@ function getWeatherForecast() {
                     console.log("weather forecast fetch error", error);
                     reject(error);
                 });
-            });
+        });
     });
 }
 
 function loadWeatherForecast() {
     // getWeatherForecast() and then stores it in a variable for later use, if it is not already loaded. returns it then
     return new Promise((resolve, reject) => {
-        if(forecastData == null) {
+        if (forecastData == null) {
             getWeatherForecast().then((data) => {
                 if (data.cod != 200) reject("Error loading weather forecast");
                 forecastData = data;

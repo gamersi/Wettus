@@ -1,8 +1,8 @@
 import { StyleSheet, Image, RefreshControl, ActivityIndicator, Button } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Text, View, ScrollView } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import { getCurrentWeather, CurrentWeather, jsonData, dataLoaded, loadWeatherForecast } from '../weatherapi/weatherUtils';
+import { getCurrentWeather, CurrentWeather, jsonData, dataLoaded, loadWeatherForecast, useWeatherContext, weatherAPIKey } from '../weatherapi/weatherUtils';
 import Card from '../components/Card';
 import DetailsScreen from './DetailsScreen';
 
@@ -10,21 +10,23 @@ let currentWeather: CurrentWeather | null = null;
 let baseDate = new Date();
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  let [city, setCity] = useState("City");
-  let [description, setDescription] = useState("Beschreibung");
-  let [imageuri, setImageuri] = useState("https://openweathermap.org/img/wn/01d@4x.png");
-  let [temp, setTemp] = useState("0 °C");
-  let [humidity, setHumidity] = useState("0%");
-  let [wind, setWind] = useState("0m/s");
-  let [low, setLow] = useState("0 °C");
-  let [high, setHigh] = useState("0 °C");
-  let [feelsLike, setFeelsLike] = useState("0 °C");
-  let [refreshing, setRefreshing] = useState(false);
-  let [detailsVisible, setDetailsVisible] = useState(false);
-  let [detailsData, setDetailsData]: [object, any] = useState({});
-  let [isFuture, setIsFuture] = useState(false);
+  const [city, setCity] = useState("City");
+  const [description, setDescription] = useState("Beschreibung");
+  const [imageuri, setImageuri] = useState("https://openweathermap.org/img/wn/01d@4x.png");
+  const [temp, setTemp] = useState("0 °C");
+  const [humidity, setHumidity] = useState("0%");
+  const [wind, setWind] = useState("0m/s");
+  const [low, setLow] = useState("0 °C");
+  const [high, setHigh] = useState("0 °C");
+  const [feelsLike, setFeelsLike] = useState("0 °C");
+  const [refreshing, setRefreshing] = useState(false);
+  const [detailsVisible, setDetailsVisible] = useState(false);
+  const [detailsData, setDetailsData]: [object, any] = useState({});
+  const [isFuture, setIsFuture] = useState(false);
   // forecast
-  let [forecast, setForecast]: [any, any] = useState({});
+  const [forecast, setForecast]: [any, any] = useState({});
+
+  const { apiKeyCorrect, setAPIKeyCorrect } = useWeatherContext();
 
 
   async function onRefresh() {
@@ -48,7 +50,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         setHigh(currentWeather.getFormattedMaxTemperature());
         setFeelsLike(currentWeather.getFormattedFeelsLike());
       } catch (e) {
-        console.log("Error loading weather:", e, jsonData, dataLoaded);
+        console.log("Error init. weather:", e, jsonData, dataLoaded);
+        // @ts-ignore import von js
+        if (jsonData.cod == "401") {
+          setAPIKeyCorrect(false);
+        }
       }
     }).catch((error) => {
       console.log("Error loading weather:", error);
@@ -56,16 +62,27 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
     loadWeatherForecast()
       .then((data) => {
+        if (data.cod == "401") {
+          setAPIKeyCorrect(false);
+        }
         setForecast(data);
       }).catch((error) => {
         console.log("Error loading forecast:", error);
       }).finally(() => {
-        console.log("Forecast loaded");
+        console.log("Forecast loaded", forecast);
       });
   }
-  if (currentWeather === null) {
+  if (currentWeather === null && apiKeyCorrect) {
     loadWeather();
   }
+
+  // check api key on startup
+  useEffect(() => {
+    if (!apiKeyCorrect && weatherAPIKey !== "" && weatherAPIKey !== "changeme" && weatherAPIKey !== "n/a") {
+      setAPIKeyCorrect(true);
+      loadWeather();
+    }
+  }, []);
 
   function isLastDay(date: Date) {
     return new Date(date.getTime() + 86400000).getDate() === 1; // 86400000 = 24 * 60 * 60 * 1000
@@ -102,6 +119,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
   return (
+    <>
+    {!apiKeyCorrect ? <Text style={styles.error}>Der angegebene API-Key ist ungültig. Bitte überprüfe die Einstellungen</Text> : (
     <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {refreshing ? <ActivityIndicator /> : null}
       <DetailsScreen isVisible={detailsVisible} weatherData={detailsData} isFuture={isFuture} onClose={() => setDetailsVisible(false)} />
@@ -151,10 +170,19 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         )}
       </ScrollView>
     </ScrollView>
+    )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  error: {
+    color: "red",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingTop: 50,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
