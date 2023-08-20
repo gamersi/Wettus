@@ -8,8 +8,8 @@ export default function DetailsScreen({ isVisible, weatherData, isFuture, onClos
         <Modal visible={isVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose} onDismiss={onClose}>
             <View style={styles.container}>
                 <Text style={styles.title}>Wetter</Text>
-                <Text style={styles.subtitle}>{weatherData?.city}</Text>
-                <Text style={styles.subtitle}>{weatherData?.country}</Text>
+                {!isFuture && <Text style={styles.subtitle}>{weatherData?.city}</Text>}
+                {!isFuture && <Text style={styles.subtitle}>{weatherData?.country}</Text>}
                 <Image style={styles.image} source={{ uri: `https://openweathermap.org/img/wn/${(isFuture ? weatherData?.weather[0].icon : weatherData?.icon)}@4x.png` }} />
                 <Text>{isFuture ? new Date(weatherData?.dt * 1000).toLocaleString(): "Jetzt"}</Text>
                 <Text>{isFuture ? weatherData?.weather[0].description : weatherData?.description}</Text>
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
+        paddingTop: 20,
         fontSize: 40,
         fontWeight: 'bold',
     },

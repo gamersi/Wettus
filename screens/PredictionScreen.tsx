@@ -26,7 +26,7 @@ export default function TabThreeScreen({ navigation }: RootTabScreenProps<'TabTh
         }).catch((error) => {
           console.log("Error loading forecast:", error);
         }).finally(() => {
-          console.log("Forecast(fp) loaded");
+          // console.log("Forecast(fp) loaded");
         });
     }
   }, [forecast]);

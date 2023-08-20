@@ -14,7 +14,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [description, setDescription] = useState("Beschreibung");
   const [imageuri, setImageuri] = useState("https://openweathermap.org/img/wn/01d@4x.png");
   const [temp, setTemp] = useState("0 °C");
-  const [humidity, setHumidity] = useState("0%");
+  // const [humidity, setHumidity] = useState("0%");
   const [wind, setWind] = useState("0m/s");
   const [low, setLow] = useState("0 °C");
   const [high, setHigh] = useState("0 °C");
@@ -44,7 +44,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         setDescription(currentWeather.getFormattedDescription());
         setImageuri(currentWeather.getFormattedIcon());
         setTemp(currentWeather.getFormattedTemperature());
-        setHumidity(currentWeather.getFormattedHumidity());
+        // setHumidity(currentWeather.getFormattedHumidity());
         setWind(currentWeather.getFormattedWindSpeed());
         setLow(currentWeather.getFormattedMinTemperature());
         setHigh(currentWeather.getFormattedMaxTemperature());
@@ -69,7 +69,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       }).catch((error) => {
         console.log("Error loading forecast:", error);
       }).finally(() => {
-        console.log("Forecast loaded", forecast);
+        // console.log("Forecast loaded", forecast);
       });
   }
   if (currentWeather === null && apiKeyCorrect) {
@@ -163,7 +163,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{item.weather[0].description}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{getTimeDiffString(new Date(item.dt * 1000))}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{new Date(item.dt * 1000).getHours()} Uhr</Text>
-                <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{item.main.temp} °C</Text>
+                <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{Math.round(item.main.temp)} °C</Text>
               </Card>
             );
           })

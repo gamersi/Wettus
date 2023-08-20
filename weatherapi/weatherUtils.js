@@ -28,7 +28,8 @@ async function loadLocation() {
     latitude = location.latitude;
     longitude = location.longitude;
     error = location.error;
-    console.log("Location load took", (new Date().getTime() - start) / 1000 + "s");
+    granted = location.granted;
+    // console.log("Location load took", (new Date().getTime() - start) / 1000 + "s");
 }
 
 export let weatherAPIKey = "changeme"
@@ -42,7 +43,7 @@ async function loadWeatherAPIKey() {
     let key = await getData("weatherAPIKey");
     if (key != null) {
         weatherAPIKey = key;
-        console.log("weatherAPIKey loaded from storage -", weatherAPIKey);
+        // console.log("weatherAPIKey loaded from storage -", weatherAPIKey);
     }
 }
 loadWeatherAPIKey();
@@ -58,7 +59,7 @@ let dataLoaded = false;
 function getCurrentWeather() {
     return new Promise((resolve, reject) => {
         loadLocation().then(() => {
-            console.log("API key", weatherAPIKey);
+            // console.log("API key", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if (error || latitude == null || longitude == null) {
                 latitude = 0;
@@ -87,7 +88,7 @@ function getCurrentWeather() {
 function getWeatherForecast() {
     return new Promise((resolve, reject) => {
         loadLocation().then(() => {
-            console.log("API keyf", weatherAPIKey);
+            // console.log("API keyf", weatherAPIKey);
             currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if (error || latitude == null || longitude == null) {
                 latitude = 0;

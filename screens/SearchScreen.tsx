@@ -17,6 +17,8 @@ export default function TabTwoScreen() {
         .then(json => {
           if (json.cod == 200) setResult(json);
         });
+    } else {
+      setResult(null);
     }
   }
 
@@ -42,8 +44,8 @@ export default function TabTwoScreen() {
               <Text>Windgeschwindigkeit: {result?.wind.speed} m/s</Text>
               <Text>Windrichtung: {result?.wind.deg} °</Text>
               <Text>Bewölkung: {result?.clouds.all} %</Text>
-              <Text>Sonnenaufgang: {new Date(result?.sys.sunrise * 1000).toLocaleTimeString()}</Text>
-              <Text>Sonnenuntergang: {new Date(result?.sys.sunset * 1000).toLocaleTimeString()}</Text>
+              <Text>Sonnenaufgang: {new Date(result?.sys.sunrise * 1000).toLocaleString()}</Text>
+              <Text>Sonnenuntergang: {new Date(result?.sys.sunset * 1000).toLocaleString()}</Text>
               <Card
                 bgcolor='#2C303F'
                 fgcolor='#fff'
@@ -70,8 +72,8 @@ export default function TabTwoScreen() {
             >
               <Image source={{ uri: `https://openweathermap.org/img/wn/${result.weather != null ? result.weather[0].icon : "01d"}@4x.png` }} style={{ width: 100, height: 100 }} />
               <Text>{result.name}</Text>
-              <Text>{result.weather != null ? result.weather[0].description : "nein"}</Text>
-              <Text>{result.main != null ? result.main.temp : "nein"} °C</Text>
+              <Text>{result.weather != null ? result.weather[0].description : "n/a"}</Text>
+              <Text>{result.main != null ? Math.round(result.main.temp) : "n/a"} °C</Text>
             </Card>
           ) : (
             <Text>Keine Ergebnisse</Text>
