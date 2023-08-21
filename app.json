@@ -31,7 +31,8 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
-      ]
+      ],
+      "package": "at.gamersi.wetter"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
