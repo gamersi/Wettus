@@ -13,5 +13,7 @@ web-build/
 ios/
 android/
 
+google-api.json
+
 # macOS
 .DS_Store
