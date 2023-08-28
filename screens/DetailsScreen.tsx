@@ -15,8 +15,8 @@ export default function DetailsScreen({ isVisible, weatherData, isFuture, onClos
                 <Text>{isFuture ? weatherData?.weather[0].description : weatherData?.description}</Text>
                 <Text>{isFuture ? weatherData?.main.temp : weatherData?.temperature} °C</Text>
                 <Text>Tief: {isFuture ? weatherData?.main.temp_min : weatherData?.minTemperature} °C</Text>
-                <Text>Hoch: {isFuture ? weatherData?.main.temp_max : weatherData?.maxTemperature} °C </Text>
-                <Text>Gefühlt: {isFuture ? weatherData?.main.feels_like : weatherData?.feelsLike} °C gefühlt</Text>
+                <Text>Hoch: {isFuture ? weatherData?.main.temp_max : weatherData?.maxTemperature} °C</Text>
+                <Text>Gefühlt: {isFuture ? weatherData?.main.feels_like : weatherData?.feelsLike} °C</Text>
                 <Text>Luftfeuchtigkeit: {isFuture ? weatherData?.main.humidity : weatherData?.humidity} %</Text>
                 <Text>Luftdruck: {isFuture ? weatherData?.main.pressure : weatherData?.pressure} hPa</Text>
                 <Text>Windgeschwindigkeit: {isFuture ? weatherData?.wind.speed : weatherData?.windSpeed} m/s</Text>
