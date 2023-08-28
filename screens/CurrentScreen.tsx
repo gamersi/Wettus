@@ -19,7 +19,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [low, setLow] = useState("0 °C");
   const [high, setHigh] = useState("0 °C");
   const [feelsLike, setFeelsLike] = useState("0 °C");
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(true);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [detailsData, setDetailsData]: [object, any] = useState({});
   const [isFuture, setIsFuture] = useState(false);
@@ -69,6 +69,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       }).catch((error) => {
         console.log("Error loading forecast:", error);
       }).finally(() => {
+        setRefreshing(false);
         // console.log("Forecast loaded", forecast);
       });
   }
@@ -84,16 +85,13 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     }
   }, []);
 
-  function isLastDay(date: Date) {
-    return new Date(date.getTime() + 86400000).getDate() === 1; // 86400000 = 24 * 60 * 60 * 1000
-  }
-
-  function getTimeDiffString(date: Date) {
-    let day1 = baseDate.getDate();
-    let month1 = baseDate.getMonth();
-    let day2 = date.getDate();
-    let month2 = date.getMonth();
-    let diff = day2 - day1;
+  function getTimeDiffString(date: Date, baseDate: Date = new Date()) {
+    const day1 = baseDate.getDate();
+    const month1 = baseDate.getMonth();
+    const day2 = date.getDate();
+    const month2 = date.getMonth();
+    const diff = day2 - day1;
+  
     if (month1 !== month2) {
       if (month2 - month1 === 1) {
         if (day2 === 1 && isLastDay(baseDate)) {
@@ -102,10 +100,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         if (day2 === 2 && isLastDay(baseDate)) {
           return "Übermorgen";
         }
-        return "in TBD Tagen";
+        return `in ${daysInMonth(baseDate) - day1 + day2} Tagen`;
       }
-      return "in TBD Tagen2";
+      return `in ${daysInMonth(baseDate) - day1 + day2} Tagen`;
     }
+
     if (diff === 0) {
       return "Heute";
     }
@@ -115,7 +114,16 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     if (diff === 2) {
       return "Übermorgen";
     }
-    return "in " + diff + " Tagen";
+    return `in ${diff} Tagen`;
+  }
+
+  function isLastDay(date: Date) {
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    return date.getDate() === lastDayOfMonth;
+  }
+  
+  function daysInMonth(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   }
 
   return (
@@ -156,7 +164,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             <Text style={{ color: "#fff" }}>Loading...</Text>
           </Card>
         ) : (
-          forecast.list?.slice(0, 8).map((item: any, index: number) => {
+          forecast.list?.slice(0, 9).map((item: any, index: number) => {
             return (
               <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} style={styles.forecastPeekCard} fgcolor={index === 0 ? "#000" : "#fff"} key={index} onPress={() => { setDetailsVisible(true); setDetailsData(item); setIsFuture(true) }}>
                 <Image style={{ width: 60, height: 60 }} source={{ uri: "http://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
