@@ -117,7 +117,7 @@ function getWeatherForecast() {
 function loadWeatherForecast() {
     // getWeatherForecast() and then stores it in a variable for later use, if it is not already loaded. returns it then
     return new Promise((resolve, reject) => {
-        if (forecastData == null) {
+        if (forecastData == null || forecastData.cod != 200) {
             getWeatherForecast().then((data) => {
                 if (data.cod != 200) reject("Error loading weather forecast");
                 forecastData = data;
