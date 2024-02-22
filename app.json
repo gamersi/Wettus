@@ -21,7 +21,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "at.gamersi.wetter",
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Erlauben Sie uns bitte, auf Ihren Standort zuzugreifen, um Ihnen das aktuelle Wetter und Vorhersagen für Ihre Region anzuzeigen.",
+        "NSLocationAlwaysUsageDescription": "Erlauben Sie uns bitte, auf Ihren Standort zuzugreifen, um Ihnen das aktuelle Wetter und Vorhersagen für Ihre Region anzuzeigen."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +46,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Diese App benötigt Zugriff auf Ihren Standort um das Wetter anzuzeigen."
+          "locationAlwaysAndWhenInUsePermission": "Erlauben Sie uns bitte, auf Ihren Standort zuzugreifen, um Ihnen das aktuelle Wetter und Vorhersagen für Ihre Region anzuzeigen."
         }
       ]
     ],
