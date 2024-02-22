@@ -16,5 +16,10 @@ android/
 
 google-api.json
 
+# locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # macOS
 .DS_Store
