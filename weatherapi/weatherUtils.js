@@ -60,13 +60,13 @@ function getCurrentWeather() {
     return new Promise((resolve, reject) => {
         loadLocation().then(() => {
             // console.log("API key", weatherAPIKey);
-            currentWeatherURL = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
+            currentWeatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if (error || latitude == null || longitude == null) {
                 latitude = 0;
                 longitude = 0;
                 position = null;
                 error = null;
-                currentWeatherURL = `http://api.openweathermap.org/data/2.5/weather?lat=0&lon=0&appid=${weatherAPIKey}&units=metric&lang=de`;
+                currentWeatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=0&lon=0&appid=${weatherAPIKey}&units=metric&lang=de`;
             }
             fetch(currentWeatherURL)
                 .then(function (response) {
@@ -89,13 +89,13 @@ function getWeatherForecast() {
     return new Promise((resolve, reject) => {
         loadLocation().then(() => {
             // console.log("API keyf", weatherAPIKey);
-            currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
+            currentWeatherURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${weatherAPIKey}&units=metric&lang=de`;
             if (error || latitude == null || longitude == null) {
                 latitude = 0;
                 longitude = 0;
                 position = null;
                 error = null;
-                currentWeatherURL = `http://api.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=${weatherAPIKey}&units=metric&lang=de`;
+                currentWeatherURL = `https://api.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=${weatherAPIKey}&units=metric&lang=de`;
             }
             fetch(currentWeatherURL)
                 .then(function (response) {
@@ -210,7 +210,7 @@ class CurrentWeather {
     }
 
     getFormattedIcon() {
-        return `http://openweathermap.org/img/wn/${this.icon}@4x.png`;
+        return `https://openweathermap.org/img/wn/${this.icon}@4x.png`;
     }
 
     getFormattedCity() {

@@ -167,7 +167,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           forecast.list?.slice(0, 9).map((item: any, index: number) => {
             return (
               <Card bgcolor={index === 0 ? "#A7B4E0" : "#272F3A"} style={styles.forecastPeekCard} fgcolor={index === 0 ? "#000" : "#fff"} key={index} onPress={() => { setDetailsVisible(true); setDetailsData(item); setIsFuture(true) }}>
-                <Image style={{ width: 60, height: 60 }} source={{ uri: "http://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
+                <Image style={{ width: 60, height: 60 }} source={{ uri: "https://openweathermap.org/img/wn/" + item.weather[0].icon + "@4x.png" }} />
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{item.weather[0].description}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{getTimeDiffString(new Date(item.dt * 1000))}</Text>
                 <Text style={{ color: index == 0 ? "#000" : "#fff" }}>{new Date(item.dt * 1000).getHours()} Uhr</Text>
