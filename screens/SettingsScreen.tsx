@@ -51,7 +51,7 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabFou
         title="Alle lokalen Daten löschen"
         onPress={() => {clearAll();APIKeyChanged('changeme');setChecked(true);setAPIKeyCorrect(false);}} />
       <Text style={styles.title}>Über</Text>
-      <Text>Version 0.1</Text>
+      <Text>Version 1.0.2</Text>
       <Text>Autor: Simon Rechberger(gamersi)</Text>
       <Text>Datenquelle: OpenWeatherMap</Text>
       <Text>Icons: FontAwesome</Text>

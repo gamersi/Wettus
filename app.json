@@ -2,7 +2,7 @@
   "expo": {
     "name": "Wettus",
     "slug": "wetter",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,7 +21,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "at.gamersi.wetter",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Erlauben Sie uns bitte, auf Ihren Standort zuzugreifen, um Ihnen das aktuelle Wetter und Vorhersagen für Ihre Region anzuzeigen.",
         "NSLocationAlwaysUsageDescription": "Erlauben Sie uns bitte, auf Ihren Standort zuzugreifen, um Ihnen das aktuelle Wetter und Vorhersagen für Ihre Region anzuzeigen."

@@ -1,8 +1,9 @@
 {
   "name": "wettus",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "scripts": {
     "start": "expo start --dev-client",
+    "start:nodev": "expo start --no-dev --minify",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -31,6 +32,7 @@
     "expo-status-bar": "~1.11.1",
     "expo-updates": "~0.24.11",
     "expo-web-browser": "~12.8.2",
+    "metro-cache": "^0.80.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.4",
